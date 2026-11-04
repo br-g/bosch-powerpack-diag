@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+*.pyc
+
+# CircuitPython / board
+seq.txt
+
+# OS
+.DS_Store
