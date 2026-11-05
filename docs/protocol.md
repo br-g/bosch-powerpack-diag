@@ -77,8 +77,44 @@ TX 022  06 19 04 60 60 11 FF   # DTC extended record, 606011, record FF
 RX 023  ...                     # multi-frame, needs flow control
 ```
 
-Two Bosch DTC roots show up: **`606011`** and **`655003`**. Bosch displays the
-three DTC bytes as a plain hex string (`60 60 11` → `606011`).
+Three Bosch DTCs show up on my pack: **`606011`**, **`655003`** and
+**`61000E`**. Bosch displays the three DTC bytes as a plain hex string
+(`60 60 11` → `606011`).
+
+The first three digits are the error code Bosch shows on the display (`606011`
+→ **606**). Meanings from the
+[OpenBattery BES2 error-code list](https://open-battery.org/docs/bosch/powerpack-bes2/error-codes/):
+
+| DTC | Display code | Bosch short text |
+|-----|--------------|------------------|
+| `606011` | 606 | External battery fault: check the wiring |
+| `655003` | 655 | Multiple battery pack faults |
+| `61000E` | 610 | Battery pack voltage error |
+
+The last three digits look like a sub-code within each family; their meaning
+is not documented publicly.
+
+`reportDTCByStatusMask` (`19 02 08`) from the reader
+(see [`data/reader_output_my_battery.txt`](../data/reader_output_my_battery.txt)):
+
+```
+TX 022  03 19 02 08                         # mask 0x08 = confirmedDTC
+RX 023  10 0F 59 02 7B 60 60 11             # first frame, 15 bytes
+TX 022  30 10 05                            # flow control
+RX 023  21 69 65 50 03 69 61 00
+RX 023  22 0E 68 ...
+```
+
+Reassembled: `59 02 | 7B | 60 60 11 69 | 65 50 03 69 | 61 00 0E 68`.
+
+| DTC | Status | Status bits (ISO 14229) |
+|-----|--------|-------------------------|
+| `606011` | `0x69` | testFailed, confirmed, failedSinceLastClear, notCompletedThisCycle |
+| `655003` | `0x69` | same |
+| `61000E` | `0x68` | same, but **not** currently testFailed (stored, not active) |
+
+Status availability mask: `0x7B`. The status-bit reading is the generic UDS
+meaning; Bosch's own interpretation is unconfirmed.
 
 ## The security gate
 
@@ -104,7 +140,7 @@ NRC quick reference seen in captures:
 - State of charge
 - Pack voltage
 - Current / measured temperature
-- Fault codes (DTCs `606011`, `655003`)
+- Fault codes (DTCs `606011`, `655003`, `61000E`)
 
 **Locked** (needs the SecurityAccess key, not recovered):
 

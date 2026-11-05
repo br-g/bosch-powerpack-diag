@@ -17,7 +17,7 @@
 #   - pack voltage
 #   - current temperature
 #   - historical min/max temperature     (locked: needs SecurityAccess)
-#   - Bosch DTCs 606011 / 655003
+#   - Bosch DTCs (e.g. 606011 / 655003 / 61000E)
 #   - life counters DID 0x0313 / 0x0312  (locked: needs SecurityAccess)
 #   - total-Ah candidate via 0x20/0x21 DID 0x0210 (optional)
 #

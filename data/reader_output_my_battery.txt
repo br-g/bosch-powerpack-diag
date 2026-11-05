@@ -1,0 +1,64 @@
+# Real serial output of firmware/reader/code.py on my pack (PowerPack Frame
+# 400, bench setup shown in docs/images/). Unedited apart from removing the
+# terminal title escape sequence CircuitPython prints on the first line.
+#
+# Three DTCs come back (ISO-TP first frame length 0x0F = 15 bytes):
+#   59 02 7B | 60 60 11 69 | 65 50 03 69 | 61 00 0E 68
+# Locked DIDs answer 7F 22 33 (securityAccessDenied).
+
+# CAN bus OK @ 500000 baud
+# No SecurityAccess 0x27, no clear/write/routine.
+# Starting passive listen / keep-alive...
+# passive: SOC_0x203=NA % | V_0x2AA=NA V | T_0x2AA=NA C | Ah_0x108=NA Ah
+# passive: SOC_0x203=NA % | V_0x2AA=NA V | T_0x2AA=NA C | Ah_0x108=NA Ah
+
+# ==================== BMS DIAGNOSTIC READ ====================
+# t=1221 ms
+# UDS TX 022  0210030000000000
+# UDS RX 023  065003003201F400
+# Extended session 10 03: OK (5003003201F4)
+# UDS TX 022  0322041500000000
+# UDS RX 023  037F22333201F400
+# DID 0415: negative response 7F 22 33
+# UDS TX 022  0322043300000000
+# UDS RX 023  037F22333201F400
+# DID 0433: negative response 7F 22 33
+# UDS TX 022  0322022200000000
+# UDS RX 023  037F22333201F400
+# DID 0222: negative response 7F 22 33
+# UDS TX 022  0322022400000000
+# UDS RX 023  037F22333201F400
+# DID 0224: negative response 7F 22 33
+# UDS TX 022  0322031300000000
+# UDS RX 023  037F22333201F400
+# DID 0313: negative response 7F 22 33
+# UDS TX 022  0322031200000000
+# UDS RX 023  037F22333201F400
+# DID 0312: negative response 7F 22 33
+# UDS TX 020  0322021000000000
+# DID 0210: no response
+# UDS TX 022  0319020800000000
+# UDS RX 023  100F59027B606011
+# UDS TX 022  3010050000000000  # FlowControl
+# UDS RX 023  2169655003696100
+# UDS RX 023  220E685003696100
+# -------------------- RESULTS --------------------
+SOC UDS DID 0x0415              : NA %
+SOC passive ID 0x203            : NA %
+Voltage passive ID 0x2AA       : 36.179 V
+Current temperature DID 0x0433 : NA C
+Temperature passive ID 0x2AA   : 20.32 C
+Max temperature DID 0x0222     : NA C
+Min temperature DID 0x0224     : NA C
+Life counter DID 0x0313/0x0312 : NA
+Ah discharged candidate        : NA
+Cycles candidate (experimental): NA
+Error codes (DTC)              : 606011(status=0x69), 655003(status=0x69), 61000E(status=0x68)  # mask avail 0x7B
+# bus=canio.BusState.ERROR_WARNING tec=110 rec=0
+# =============================================================
+# passive: SOC_0x203=NA % | V_0x2AA=36.179 V | T_0x2AA=20.32 C | Ah_0x108=NA Ah
+# passive: SOC_0x203=NA % | V_0x2AA=36.155 V | T_0x2AA=20.32 C | Ah_0x108=NA Ah
+# passive: SOC_0x203=NA % | V_0x2AA=36.167 V | T_0x2AA=20.31 C | Ah_0x108=NA Ah
+# passive: SOC_0x203=NA % | V_0x2AA=36.167 V | T_0x2AA=26.26 C | Ah_0x108=NA Ah
+# passive: SOC_0x203=NA % | V_0x2AA=36.167 V | T_0x2AA=20.30 C | Ah_0x108=NA Ah
+# passive: SOC_0x203=NA % | V_0x2AA=36.167 V | T_0x2AA=20.30 C | Ah_0x108=NA Ah
